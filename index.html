@@ -1,0 +1,145 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d9488" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Compras</title>
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>Minhas Compras</h1>
+        <p>Organize por data, marque como comprado e reagende quando precisar.</p>
+      </header>
+
+      <section class="card form-card">
+        <div class="top-actions">
+          <button id="toggle-form-btn" type="button" class="toggle-form-btn">Novo item</button>
+          <div class="sync-actions">
+            <span id="storage-source">Base: local</span>
+            <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
+            <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
+          </div>
+        </div>
+        <small id="sync-status"></small>
+
+        <form id="task-form" hidden>
+          <label>
+            Item
+            <input id="title" name="title" type="text" placeholder="Ex.: Leite" required maxlength="80" />
+          </label>
+
+          <div class="row">
+            <label>
+              Data de compra
+              <input id="dueDate" name="dueDate" type="date" required />
+            </label>
+
+            <label>
+              Recorrencia
+              <select id="recurrence" name="recurrence">
+                <option value="none">Nao recorrente</option>
+                <option value="daily">Diaria</option>
+                <option value="weekly">Semanal</option>
+                <option value="monthly">Mensal</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button id="submit-btn" type="submit">Adicionar</button>
+            <button id="cancel-edit-btn" type="button" class="btn-cancel" hidden>Cancelar edicao</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card month-card">
+        <div class="month-head">
+          <h2>Visao mensal</h2>
+          <div class="month-nav">
+            <button id="month-prev" type="button" aria-label="Mes anterior"><</button>
+            <strong id="month-label"></strong>
+            <button id="month-next" type="button" aria-label="Proximo mes">></button>
+          </div>
+        </div>
+        <div class="month-weekdays">
+          <span>Dom</span>
+          <span>Seg</span>
+          <span>Ter</span>
+          <span>Qua</span>
+          <span>Qui</span>
+          <span>Sex</span>
+          <span>Sab</span>
+        </div>
+        <div id="month-grid" class="month-grid"></div>
+        <section id="day-preview" class="day-preview" hidden>
+          <div class="day-preview-head">
+            <h3 id="day-preview-title"></h3>
+            <div class="day-preview-actions">
+              <button id="day-preview-goto" type="button" class="sync-btn">Ir para ↓</button>
+              <button id="day-preview-close" type="button" class="sync-btn" aria-label="Fechar visualizacao diaria" title="Fechar visualizacao diaria">Fechar</button>
+            </div>
+          </div>
+          <ul id="day-preview-list"></ul>
+        </section>
+      </section>
+
+      <section class="card">
+        <div class="list-head">
+          <h2>Lista de compras</h2>
+          <small id="stats"></small>
+        </div>
+        <section class="task-section overdue-section">
+          <h3 class="section-title">Atrasadas</h3>
+          <ul id="task-list-overdue"></ul>
+        </section>
+        <section class="task-section">
+          <div class="section-heading">
+            <h3 class="section-title">Para comprar</h3>
+            <small class="section-hint">Arraste um item para reorganizar dentro da mesma data.</small>
+          </div>
+          <ul id="task-list-open"></ul>
+        </section>
+        <section class="task-section done-section">
+          <h3 class="section-title">Compradas</h3>
+          <ul id="task-list-done"></ul>
+        </section>
+        <section class="task-section deleted-section">
+          <h3 class="section-title">Excluidas</h3>
+          <ul id="task-list-deleted"></ul>
+        </section>
+      </section>
+    </main>
+
+    <input id="json-file-input" type="file" accept=".json,application/json,text/plain" hidden />
+
+    <template id="task-template">
+      <li class="task-item">
+        <button class="btn-toggle" title="Marcar como comprado ou reativar" aria-label="Marcar como comprado ou reativar" type="button"></button>
+        <div class="task-info">
+          <div class="task-title-row">
+            <h3></h3>
+            <button class="btn-edit" title="Editar item" type="button">Editar</button>
+          </div>
+          <div class="meta-line">
+            <span class="meta-date"></span>
+            <button class="btn-postpone-minus" title="Jogar para tras" type="button">-1 dia</button>
+            <button class="btn-postpone" title="Jogar para frente" type="button">+1 dia</button>
+            <button class="btn-calendar" title="Escolher data" type="button">Data</button>
+            <button class="btn-delete danger" title="Excluir" type="button">Excluir</button>
+            <button class="btn-move-up" title="Subir na data" type="button">↑</button>
+            <button class="btn-move-down" title="Descer na data" type="button">↓</button>
+            <button class="btn-restore" title="Usar novamente" type="button">Reutilizar</button>
+            <input class="date-picker-inline" type="date" />
+          </div>
+          <p class="meta-extra"></p>
+        </div>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
