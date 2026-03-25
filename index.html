@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d9488" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Compras</title>
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>Minhas Compras</h1>
+        <p>Adicione itens, edite e reorganize sua lista.</p>
+      </header>
+
+      <section class="card form-card">
+        <div class="top-actions">
+          <button id="toggle-form-btn" type="button" class="toggle-form-btn">Novo item</button>
+          <div class="sync-actions">
+            <span id="storage-source">Base: local</span>
+            <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
+            <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
+          </div>
+        </div>
+        <small id="sync-status"></small>
+
+        <form id="task-form" hidden>
+          <label>
+            Item
+            <input id="title" name="title" type="text" placeholder="Ex.: Arroz" required maxlength="80" />
+          </label>
+
+          <div class="form-actions">
+            <button id="submit-btn" type="submit">Adicionar</button>
+            <button id="cancel-edit-btn" type="button" class="btn-cancel" hidden>Cancelar edicao</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="list-head">
+          <h2>Lista de compras</h2>
+          <small id="stats"></small>
+        </div>
+        <section class="task-section">
+          <div class="section-heading">
+            <h3 class="section-title">Em aberto</h3>
+            <small class="section-hint">Use os botoes para reorganizar sua lista.</small>
+          </div>
+          <ul id="task-list-open"></ul>
+        </section>
+        <section class="task-section done-section">
+          <h3 class="section-title">Concluidas</h3>
+          <ul id="task-list-done"></ul>
+        </section>
+        <section class="task-section deleted-section">
+          <h3 class="section-title">Excluidas</h3>
+          <ul id="task-list-deleted"></ul>
+        </section>
+      </section>
+    </main>
+
+    <input id="json-file-input" type="file" accept=".json,application/json,text/plain" hidden />
+
+    <template id="task-template">
+      <li class="task-item">
+        <button class="btn-toggle" title="Concluir item" aria-label="Concluir item" type="button"></button>
+        <div class="task-info">
+          <div class="task-title-row">
+            <h3></h3>
+            <div class="task-actions">
+              <button class="btn-edit" title="Editar item" type="button">Editar</button>
+              <button class="btn-delete danger" title="Excluir" type="button">Excluir</button>
+              <button class="btn-move-up" title="Subir item" type="button">↑</button>
+              <button class="btn-move-down" title="Descer item" type="button">↓</button>
+              <button class="btn-restore" title="Reativar item" type="button">Reativar</button>
+            </div>
+          </div>
+        </div>
+      </li>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
