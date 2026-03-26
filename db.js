@@ -164,6 +164,12 @@
       }
     }
 
+    const hasExplicitPriceBookSource = (
+      Array.isArray(raw && raw.priceBook)
+      || Array.isArray(raw && raw.priceEntries)
+      || Array.isArray(raw && raw.prices)
+    );
+
     const sourcePriceBook = Array.isArray(raw && (raw.priceBook || raw.priceEntries || raw.prices))
       ? (raw.priceBook || raw.priceEntries || raw.prices)
       : [];
@@ -243,7 +249,7 @@
 
       next.listItems.push(listItem);
 
-      if (brand && market && price !== null && !listItem.needsPriceSync) {
+      if (!hasExplicitPriceBookSource && brand && market && price !== null && !listItem.needsPriceSync) {
         const hasReference = next.priceBook.some((entry) => (
           entry.productId === productId
           && normalizeKey(entry.brand) === normalizeKey(brand)

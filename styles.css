@@ -461,6 +461,16 @@ select {
   gap: 2px;
 }
 
+.market-analysis-item.is-best-total {
+  background: #ecfdf3;
+  border-color: #86efac;
+}
+
+.market-analysis-item.is-best-total.is-partial {
+  background: #ecfdf3;
+  border-color: #86efac;
+}
+
 .market-analysis-item.is-partial {
   background: #f8fafc;
 }

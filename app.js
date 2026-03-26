@@ -62,6 +62,7 @@
   const NEW_PRODUCT_OPTION_VALUE = "__new_product__";
   const NEW_MARKET_OPTION_VALUE = "__new_market__";
   const QUICK_QUANTITY_OPTIONS = Array.from({ length: 10 }, (_, index) => String(index + 1));
+  const MARKET_ANALYSIS_MAX_MISSING_ITEMS = 1;
   const PRICE_SYNC_FIELDS = ["brand", "market", "price"];
   let marketAnalysisVisible = false;
   let bulkMarketApplied = false;
@@ -171,38 +172,94 @@
 
   function calculateMarketAnalysis(openItems) {
     const totalItems = openItems.length;
-    const totalsByMarket = new Map();
+    const itemSnapshots = [];
+    const allMarkets = new Map();
 
     for (const item of openItems) {
       const quantity = getItemQuantity(item);
       const marketEntries = getBestEntriesByMarketForItem(item);
+      const itemMarketMap = new Map();
 
+      let sumPrices = 0;
+      let countPrices = 0;
       for (const marketEntry of marketEntries) {
         const marketKey = dbApi.normalizeKey(marketEntry.market);
-        const current = totalsByMarket.get(marketKey) || {
-          market: marketEntry.market,
-          total: 0,
-          coveredItems: 0,
-        };
+        const price = Number(marketEntry.price);
+        if (!marketKey || !Number.isFinite(price)) continue;
 
-        current.total += Number((marketEntry.price * quantity).toFixed(2));
-        current.coveredItems += 1;
-        totalsByMarket.set(marketKey, current);
+        itemMarketMap.set(marketKey, {
+          market: marketEntry.market,
+          price: Number(price.toFixed(2)),
+        });
+        if (!allMarkets.has(marketKey)) {
+          allMarkets.set(marketKey, marketEntry.market);
+        }
+        sumPrices += price;
+        countPrices += 1;
       }
+
+      const averagePrice = countPrices > 0
+        ? Number((sumPrices / countPrices).toFixed(2))
+        : null;
+
+      itemSnapshots.push({
+        quantity,
+        marketMap: itemMarketMap,
+        averagePrice,
+      });
     }
 
-    const rows = [...totalsByMarket.values()].map((row) => {
-      const total = Number(row.total.toFixed(2));
-      const missingItems = Math.max(totalItems - row.coveredItems, 0);
+    const rows = [...allMarkets.entries()].map(([marketKey, marketName]) => {
+      let actualTotal = 0;
+      let estimatedTotal = 0;
+      let coveredItems = 0;
+      let missingItems = 0;
+      let estimatedItems = 0;
+      let missingWithoutEstimate = 0;
+
+      for (const snapshot of itemSnapshots) {
+        const directEntry = snapshot.marketMap.get(marketKey) || null;
+        if (directEntry) {
+          actualTotal += Number((directEntry.price * snapshot.quantity).toFixed(2));
+          coveredItems += 1;
+          continue;
+        }
+
+        missingItems += 1;
+        if (Number.isFinite(snapshot.averagePrice)) {
+          estimatedTotal += Number((snapshot.averagePrice * snapshot.quantity).toFixed(2));
+          estimatedItems += 1;
+        } else {
+          missingWithoutEstimate += 1;
+        }
+      }
+
+      actualTotal = Number(actualTotal.toFixed(2));
+      estimatedTotal = Number(estimatedTotal.toFixed(2));
+      const total = Number((actualTotal + estimatedTotal).toFixed(2));
+      const eligibleByMissing = missingItems <= MARKET_ANALYSIS_MAX_MISSING_ITEMS;
+      const hasEstimateCoverage = missingWithoutEstimate === 0;
+
       return {
-        market: row.market,
+        market: marketName,
         total,
-        coveredItems: row.coveredItems,
+        actualTotal,
+        estimatedTotal,
+        coveredItems,
         missingItems,
+        estimatedItems,
+        missingWithoutEstimate,
+        eligibleForComparison: eligibleByMissing && hasEstimateCoverage,
       };
     });
 
     rows.sort((a, b) => {
+      if (a.eligibleForComparison !== b.eligibleForComparison) {
+        return a.eligibleForComparison ? -1 : 1;
+      }
+      if (a.eligibleForComparison && b.eligibleForComparison) {
+        return a.total - b.total;
+      }
       if (a.missingItems !== b.missingItems) return a.missingItems - b.missingItems;
       return a.total - b.total;
     });
@@ -210,6 +267,7 @@
     return {
       totalItems,
       rows,
+      maxMissingItems: MARKET_ANALYSIS_MAX_MISSING_ITEMS,
     };
   }
 
@@ -505,7 +563,7 @@
 
     const title = document.createElement("p");
     title.className = "market-analysis-title";
-    title.textContent = "Comparativo total da lista em aberto por mercado";
+    title.textContent = `Comparativo total da lista em aberto por mercado (tolerancia: ate ${MARKET_ANALYSIS_MAX_MISSING_ITEMS} item(ns) faltante(s))`;
     home.marketAnalysis.appendChild(title);
 
     if (openItems.length === 0) {
@@ -525,14 +583,15 @@
       return;
     }
 
-    const bestComplete = result.rows.find((row) => row.missingItems === 0) || null;
     const activeMarketKey = bulkMarketApplied ? dbApi.normalizeKey(selectedBulkMarket) : "";
     const list = document.createElement("ul");
     list.className = "market-analysis-list";
 
-    for (const row of result.rows) {
+    for (let rowIndex = 0; rowIndex < result.rows.length; rowIndex += 1) {
+      const row = result.rows[rowIndex];
       const itemEl = document.createElement("li");
       itemEl.className = "market-analysis-item";
+      if (rowIndex === 0) itemEl.classList.add("is-best-total");
       if (row.missingItems > 0) itemEl.classList.add("is-partial");
 
       const header = document.createElement("div");
@@ -540,7 +599,11 @@
 
       const marketLine = document.createElement("strong");
       marketLine.className = "market-analysis-market";
-      marketLine.textContent = `${row.market}: ${dbApi.formatPrice(row.total)}`;
+      if (row.estimatedItems > 0) {
+        marketLine.textContent = `${row.market}: ${dbApi.formatPrice(row.total)} (${row.estimatedItems} itens estimados)`;
+      } else {
+        marketLine.textContent = `${row.market}: ${dbApi.formatPrice(row.total)}`;
+      }
       header.appendChild(marketLine);
 
       const useBtn = document.createElement("button");
@@ -557,15 +620,18 @@
       const details = document.createElement("span");
       details.className = "market-analysis-details";
       if (row.missingItems > 0) {
-        details.textContent = `Cobre ${row.coveredItems}/${result.totalItems} itens (faltam ${row.missingItems})`;
+        const missingNoEstimateText = row.missingWithoutEstimate > 0
+          ? ` | sem estimativa para ${row.missingWithoutEstimate}`
+          : "";
+        details.textContent = `Cobre ${row.coveredItems}/${result.totalItems} itens | faltam ${row.missingItems}${missingNoEstimateText}`;
       } else {
         details.textContent = `Cobre ${result.totalItems}/${result.totalItems} itens`;
       }
       itemEl.appendChild(details);
 
       const tags = [];
-      if (bestComplete && dbApi.normalizeKey(bestComplete.market) === dbApi.normalizeKey(row.market)) {
-        tags.push({ text: "melhor total", active: false });
+      if (row.missingItems > MARKET_ANALYSIS_MAX_MISSING_ITEMS || row.missingWithoutEstimate > 0) {
+        tags.push({ text: "faltantes altos", active: false });
       }
       if (activeMarketKey && activeMarketKey === dbApi.normalizeKey(row.market)) {
         tags.push({ text: "em uso", active: true });
@@ -643,7 +709,57 @@
 
   async function exportDbJson() {
     const db = dbApi.getDb();
-    const jsonText = JSON.stringify(db, null, 2);
+    const products = Array.isArray(db.products) ? [...db.products] : [];
+
+    const cleanProducts = products
+      .filter((product) => product && product.id && dbApi.normalizeText(product.name))
+      .map((product) => ({
+        id: String(product.id),
+        name: dbApi.normalizeText(product.name),
+        createdAt: product.createdAt ? String(product.createdAt) : dbApi.nowIso(),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    const cleanProductById = new Map(cleanProducts.map((product) => [String(product.id), product]));
+
+    const cleanPriceBook = (Array.isArray(db.priceBook) ? db.priceBook : [])
+      .filter((entry) => {
+        if (!entry) return false;
+        if (!cleanProductById.has(String(entry.productId))) return false;
+        if (!dbApi.normalizeText(entry.brand)) return false;
+        if (!dbApi.normalizeText(entry.market)) return false;
+        return dbApi.parsePrice(entry.price) !== null;
+      })
+      .map((entry) => ({
+        id: entry.id ? String(entry.id) : dbApi.safeId(),
+        productId: String(entry.productId),
+        brand: dbApi.normalizeText(entry.brand),
+        market: dbApi.normalizeText(entry.market),
+        price: dbApi.parsePrice(entry.price),
+        updatedAt: entry.updatedAt ? String(entry.updatedAt) : dbApi.nowIso(),
+      }))
+      .sort((a, b) => {
+        const productA = cleanProductById.get(a.productId);
+        const productB = cleanProductById.get(b.productId);
+        const nameA = productA ? dbApi.normalizeText(productA.name) : "";
+        const nameB = productB ? dbApi.normalizeText(productB.name) : "";
+
+        const nameDiff = nameA.localeCompare(nameB, "pt-BR");
+        if (nameDiff !== 0) return nameDiff;
+
+        const brandDiff = a.brand.localeCompare(b.brand, "pt-BR");
+        if (brandDiff !== 0) return brandDiff;
+
+        return a.market.localeCompare(b.market, "pt-BR");
+      });
+
+    const exportPayload = {
+      products: cleanProducts,
+      priceBook: cleanPriceBook,
+      listItems: [],
+      openOrderMode: "name",
+    };
+
+    const jsonText = JSON.stringify(exportPayload, null, 2);
 
     if (typeof window.showSaveFilePicker === "function") {
       try {
@@ -664,7 +780,7 @@
         const writable = await handle.createWritable();
         await writable.write(jsonText);
         await writable.close();
-        setSyncStatus("JSON exportado com sucesso.");
+        setSyncStatus("JSON exportado com sucesso (somente cadastro).");
         return;
       } catch (error) {
         if (error && error.name === "AbortError") {
@@ -685,7 +801,7 @@
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      setSyncStatus("JSON exportado por download.");
+      setSyncStatus("JSON exportado por download (somente cadastro).");
     } catch {
       setSyncStatus("Falha ao exportar JSON.");
     }
