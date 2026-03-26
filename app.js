@@ -2457,18 +2457,22 @@
       if (dragBtn) dragBtn.classList.remove("is-hidden");
       if (doneLossLine) doneLossLine.classList.add("is-hidden");
 
-      moveUpBtn.disabled = index === 0;
-      moveDownBtn.disabled = index === total - 1;
-      moveUpBtn.addEventListener("click", () => moveOpenItem(item.id, -1));
-      moveDownBtn.addEventListener("click", () => moveOpenItem(item.id, 1));
+      if (moveUpBtn) {
+        moveUpBtn.disabled = index === 0;
+        moveUpBtn.addEventListener("click", () => moveOpenItem(item.id, -1));
+      }
+      if (moveDownBtn) {
+        moveDownBtn.disabled = index === total - 1;
+        moveDownBtn.addEventListener("click", () => moveOpenItem(item.id, 1));
+      }
     }
 
     if (mode === "done") {
       toggleBtn.classList.add("checked");
       toggleBtn.addEventListener("click", () => toggleComplete(item.id));
       if (dragBtn) dragBtn.classList.add("is-hidden");
-      moveUpBtn.classList.add("is-hidden");
-      moveDownBtn.classList.add("is-hidden");
+      if (moveUpBtn) moveUpBtn.classList.add("is-hidden");
+      if (moveDownBtn) moveDownBtn.classList.add("is-hidden");
       deleteBtn.textContent = "Retirar";
       deleteBtn.title = "Retirar da lista";
       deleteBtn.addEventListener("click", () => removeFromShoppingList(item.id));
