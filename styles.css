@@ -867,6 +867,23 @@ select {
   font-size: 0.85rem;
 }
 
+.open-group-title {
+  margin: 2px 0 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #eef4ff;
+  color: #1e3a8a;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.open-group-empty {
+  margin: -2px 0 2px;
+  padding: 2px 6px 4px;
+  color: #64748b;
+  font-size: 0.76rem;
+}
+
 .picker-overlay {
   position: fixed;
   inset: 0;
@@ -964,12 +981,35 @@ select {
 }
 
 @media (max-width: 759px) {
+  body {
+    font-size: 14px;
+  }
+
   .app {
     padding: 12px;
   }
 
+  .card {
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  h2 {
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
   .list-head {
-    gap: 10px;
+    gap: 8px;
   }
 
   .list-head-title {
@@ -982,32 +1022,192 @@ select {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
-    gap: 8px;
+    gap: 6px;
   }
 
   .list-head-actions #stats {
     grid-column: 1 / -1;
     padding-bottom: 0;
+    font-size: 0.8rem;
   }
 
   .buy-mode-box {
     min-width: 0;
     width: 100%;
+    gap: 2px;
+  }
+
+  .buy-mode-title {
+    font-size: 0.58rem;
   }
 
   .btn-apply-market,
   .btn-analyze-list {
     width: 100%;
-    min-height: 34px;
+    min-height: 32px;
+    font-size: 0.74rem;
   }
 
   .top-nav {
     gap: 6px;
   }
 
+  .nav-link {
+    padding: 7px 9px;
+    font-size: 0.78rem;
+  }
+
+  .sync-btn {
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 0.76rem;
+  }
+
+  .btn-quick-add {
+    width: 28px;
+    height: 28px;
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+  }
+
+  .section-hint,
+  .open-summary,
+  .done-summary,
+  .empty-state {
+    font-size: 0.75rem;
+  }
+
+  .open-group-title {
+    font-size: 0.72rem;
+    padding: 5px 7px;
+  }
+
+  .open-group-empty {
+    font-size: 0.7rem;
+    padding: 2px 4px 3px;
+  }
+
+  .task-item {
+    padding: 7px 8px;
+    gap: 8px;
+  }
+
+  .btn-toggle {
+    width: 22px;
+    height: 22px;
+  }
+
+  .task-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .task-main-line {
+    gap: 4px;
+  }
+
+  .task-title-row h3 {
+    font-size: 0.96rem;
+  }
+
+  .btn-inline {
+    padding: 2px 6px;
+    font-size: 0.74rem;
+  }
+
+  .top-rank-badge {
+    min-width: 18px;
+    padding: 1px 5px;
+    font-size: 0.58rem;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+
+  .task-actions button {
+    min-width: 30px;
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+
+  .meta-cheapest {
+    margin-top: 4px;
+    font-size: 0.73rem;
+  }
+
+  .done-loss-line {
+    margin-top: 5px;
+    font-size: 0.73rem;
+  }
+
+  .catalog-name {
+    font-size: 0.86rem;
+  }
+
+  .btn-add-catalog {
+    font-size: 0.74rem;
+    padding: 4px 8px;
+  }
+
+  .market-analysis-title,
+  .market-analysis-market {
+    font-size: 0.8rem;
+  }
+
+  .market-analysis-details {
+    font-size: 0.72rem;
+  }
+
+  .market-analysis-tag {
+    font-size: 0.64rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .app {
+    padding: 10px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .top-nav {
+    gap: 5px;
+  }
+
   .nav-link,
   .sync-btn {
-    min-height: 36px;
+    font-size: 0.74rem;
+    padding: 6px 8px;
+  }
+
+  .task-main-line .sep {
+    display: none;
+  }
+
+  .task-main-line {
+    row-gap: 6px;
+  }
+
+  .task-actions {
+    row-gap: 4px;
+  }
+
+  .task-actions button {
+    padding: 2px 6px;
+    font-size: 0.68rem;
+  }
+
+  .buy-mode-title {
+    font-size: 0.56rem;
   }
 }
 

@@ -438,6 +438,61 @@
     home.openSummary.textContent = text;
   }
 
+  function getMarketRankForItem(item, marketName) {
+    if (!item || !item.productId) return null;
+
+    const targetMarketKey = dbApi.normalizeKey(marketName);
+    if (!targetMarketKey) return null;
+
+    const hasBrand = Boolean(dbApi.normalizeText(item.brand));
+    if (!hasBrand) return null;
+
+    const rankedEntries = getEntriesForProductBrand(item.productId, item.brand)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+    if (rankedEntries.length === 0) return null;
+
+    const currentEntry = rankedEntries.find(
+      (entry) => dbApi.normalizeKey(entry.market) === targetMarketKey,
+    ) || null;
+
+    return currentEntry ? currentEntry.rank : null;
+  }
+
+  function splitOpenItemsBySelectedMarket(openItems, marketName) {
+    const bestAtSelectedMarket = [];
+    const cheaperElsewhere = [];
+
+    for (const item of openItems) {
+      const rankInSelectedMarket = getMarketRankForItem(item, marketName);
+      if (rankInSelectedMarket === 1) {
+        bestAtSelectedMarket.push(item);
+      } else {
+        cheaperElsewhere.push(item);
+      }
+    }
+
+    return {
+      bestAtSelectedMarket,
+      cheaperElsewhere,
+    };
+  }
+
+  function appendOpenGroupTitle(text) {
+    if (!home.openList) return;
+    const title = document.createElement("li");
+    title.className = "open-group-title";
+    title.textContent = text;
+    home.openList.appendChild(title);
+  }
+
+  function appendOpenGroupEmpty(text) {
+    if (!home.openList) return;
+    const empty = document.createElement("li");
+    empty.className = "open-group-empty";
+    empty.textContent = text;
+    home.openList.appendChild(empty);
+  }
+
   function renderMarketAnalysis(openItems) {
     if (!home.marketAnalysis || !home.analyzeListBtn) return;
 
@@ -2477,8 +2532,45 @@
         home.openList.innerHTML = '<li class="empty-state">Nenhum item em aberto.</li>';
       }
     } else {
+      const openIndexMap = new Map();
       for (let i = 0; i < openItems.length; i += 1) {
-        home.openList.appendChild(renderHomeListItem(openItems[i], i, openItems.length, "open"));
+        openIndexMap.set(openItems[i].id, i);
+      }
+
+      const shouldSplitBySelectedMarket = bulkMarketApplied
+        && Boolean(dbApi.normalizeText(selectedBulkMarket));
+
+      if (shouldSplitBySelectedMarket) {
+        const selectedMarketLabel = dbApi.normalizeText(selectedBulkMarket);
+        const groups = splitOpenItemsBySelectedMarket(openItems, selectedMarketLabel);
+
+        appendOpenGroupTitle(
+          `Mais baratos em ${selectedMarketLabel} (1 no ranking): ${groups.bestAtSelectedMarket.length}`,
+        );
+        if (groups.bestAtSelectedMarket.length === 0) {
+          appendOpenGroupEmpty(`Nenhum item com menor preco em ${selectedMarketLabel}.`);
+        } else {
+          for (const item of groups.bestAtSelectedMarket) {
+            const globalIndex = openIndexMap.get(item.id) || 0;
+            home.openList.appendChild(renderHomeListItem(item, globalIndex, openItems.length, "open"));
+          }
+        }
+
+        appendOpenGroupTitle(
+          `Comprar em ${selectedMarketLabel}, mas mais barato em outro mercado: ${groups.cheaperElsewhere.length}`,
+        );
+        if (groups.cheaperElsewhere.length === 0) {
+          appendOpenGroupEmpty("Nenhum item neste grupo.");
+        } else {
+          for (const item of groups.cheaperElsewhere) {
+            const globalIndex = openIndexMap.get(item.id) || 0;
+            home.openList.appendChild(renderHomeListItem(item, globalIndex, openItems.length, "open"));
+          }
+        }
+      } else {
+        for (let i = 0; i < openItems.length; i += 1) {
+          home.openList.appendChild(renderHomeListItem(openItems[i], i, openItems.length, "open"));
+        }
       }
       wireOpenListDragHandles();
     }
