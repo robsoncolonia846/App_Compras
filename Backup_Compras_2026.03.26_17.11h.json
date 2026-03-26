@@ -1,0 +1,111 @@
+{
+  "products": [
+    {
+      "id": "4f46b12f-fbd9-43d0-a546-6fd0cd7047e0",
+      "name": "Arroz",
+      "createdAt": "2026-03-26T13:07:32.466Z"
+    },
+    {
+      "id": "05bf89ca-619d-4344-b74d-b30249f857ec",
+      "name": "Feijão",
+      "createdAt": "2026-03-26T13:19:01.972Z"
+    },
+    {
+      "id": "862afab3-ba6b-4a2e-9314-3bc76f2b431a",
+      "name": "Nescafé",
+      "createdAt": "2026-03-26T13:39:27.840Z"
+    }
+  ],
+  "priceBook": [
+    {
+      "id": "280285c9-2b9c-4cdb-8317-567899e8ce09",
+      "productId": "4f46b12f-fbd9-43d0-a546-6fd0cd7047e0",
+      "brand": "Tordilho",
+      "market": "Bom Preço",
+      "price": 10,
+      "updatedAt": "2026-03-26T17:40:25.556Z"
+    },
+    {
+      "id": "233295a7-7bf0-4e81-aeee-a460895dd89a",
+      "productId": "4f46b12f-fbd9-43d0-a546-6fd0cd7047e0",
+      "brand": "Tordilho",
+      "market": "Los Hermanos",
+      "price": 11,
+      "updatedAt": "2026-03-26T17:39:15.402Z"
+    },
+    {
+      "id": "e9d8bf38-4ae8-49c2-8c09-7b9770e3dc50",
+      "productId": "4f46b12f-fbd9-43d0-a546-6fd0cd7047e0",
+      "brand": "Tordilho",
+      "market": "Paquito",
+      "price": 12,
+      "updatedAt": "2026-03-26T16:21:28.349Z"
+    },
+    {
+      "id": "674b6901-0f7e-45e9-ba71-f280e7426ef8",
+      "productId": "05bf89ca-619d-4344-b74d-b30249f857ec",
+      "brand": "Tordilho",
+      "market": "Bom Preço",
+      "price": 11,
+      "updatedAt": "2026-03-26T16:39:43.386Z"
+    },
+    {
+      "id": "61ae2c8b-bc1d-457d-9f7c-ea5e83ae1d13",
+      "productId": "05bf89ca-619d-4344-b74d-b30249f857ec",
+      "brand": "Tordilho",
+      "market": "Friamberia",
+      "price": 12,
+      "updatedAt": "2026-03-26T20:08:20.677Z"
+    },
+    {
+      "id": "573eba80-5eb8-4eaf-85a4-65d1099c5daa",
+      "productId": "05bf89ca-619d-4344-b74d-b30249f857ec",
+      "brand": "Tordilho",
+      "market": "Los Hermanos",
+      "price": 10,
+      "updatedAt": "2026-03-26T16:39:45.883Z"
+    },
+    {
+      "id": "1e9c4593-bef3-4bdd-902f-d6e7b30d7fa5",
+      "productId": "05bf89ca-619d-4344-b74d-b30249f857ec",
+      "brand": "Tordilho",
+      "market": "Paquito",
+      "price": 12,
+      "updatedAt": "2026-03-26T16:39:51.572Z"
+    },
+    {
+      "id": "367f69ae-3739-4223-a760-67fbfa3ea4f6",
+      "productId": "862afab3-ba6b-4a2e-9314-3bc76f2b431a",
+      "brand": "Tradição",
+      "market": "Bom preço",
+      "price": 12,
+      "updatedAt": "2026-03-26T16:40:00.476Z"
+    },
+    {
+      "id": "e5c4562c-19c0-4331-adc8-a2590c6489f1",
+      "productId": "862afab3-ba6b-4a2e-9314-3bc76f2b431a",
+      "brand": "Tradição",
+      "market": "Friamberia",
+      "price": 10,
+      "updatedAt": "2026-03-26T20:07:12.124Z"
+    },
+    {
+      "id": "7c0f77d0-b325-41af-bd98-3733941b4e33",
+      "productId": "862afab3-ba6b-4a2e-9314-3bc76f2b431a",
+      "brand": "Tradição",
+      "market": "Los Hermanos",
+      "price": 11,
+      "updatedAt": "2026-03-26T16:40:00.116Z"
+    },
+    {
+      "id": "4039f7f0-6e6c-4d98-af9e-b7f3db51595c",
+      "productId": "862afab3-ba6b-4a2e-9314-3bc76f2b431a",
+      "brand": "Tradição",
+      "market": "Paquito",
+      "price": 10,
+      "updatedAt": "2026-03-26T16:39:59.676Z"
+    }
+  ],
+  "listItems": [],
+  "openOrderMode": "name"
+}

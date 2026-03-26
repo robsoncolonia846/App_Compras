@@ -862,19 +862,26 @@ select {
 }
 
 .top-rank-1 {
-  background: linear-gradient(120deg, #f59e0b, #d97706);
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
 }
 
 .top-rank-2 {
-  background: linear-gradient(120deg, #64748b, #475569);
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #92400e;
 }
 
 .top-rank-3 {
-  background: linear-gradient(120deg, #b45309, #92400e);
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
 }
 
 .top-rank-other {
   background: #6b7280;
+  border: 1px solid #475569;
 }
 
 .top-rank-text {
