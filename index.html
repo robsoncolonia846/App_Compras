@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -6,82 +6,181 @@
     <meta name="theme-color" content="#0d9488" />
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="styles.css" />
-    <title>Compras</title>
+    <title>Minhas Compras</title>
   </head>
-  <body>
+  <body data-page="home">
     <main class="app">
       <header class="hero">
         <h1>Minhas Compras</h1>
-        <p>Adicione itens, edite e reorganize sua lista.</p>
+        <p>Lista com comparativo dos dois melhores precos por produto.</p>
+        <nav class="top-nav">
+          <a class="nav-link" href="products.html">Cadastro de produtos</a>
+          <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
+          <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
+        </nav>
       </header>
 
-      <section class="card form-card">
-        <div class="top-actions">
-          <button id="toggle-form-btn" type="button" class="toggle-form-btn">Novo item</button>
-          <div class="sync-actions">
-            <span id="storage-source">Base: local</span>
-            <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
-            <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
-          </div>
-        </div>
-        <small id="sync-status"></small>
-
-        <form id="task-form" hidden>
+      <section class="card is-hidden" id="legacy-add-item-card">
+        <h2>Adicionar item na lista</h2>
+        <form id="list-form" class="grid-form home-form">
           <label>
-            Item
-            <input id="title" name="title" type="text" placeholder="Ex.: Arroz" required maxlength="80" />
+            Produto
+            <select id="list-product" name="product" required>
+              <option value="">Selecione um produto</option>
+            </select>
+            <input
+              id="list-new-product"
+              name="new-product"
+              class="is-hidden"
+              type="text"
+              placeholder="Ex.: Macarrao"
+              maxlength="80"
+            />
           </label>
-
+          <label>
+            Marca
+            <select id="list-brand" name="brand">
+              <option value="">Selecione a marca</option>
+            </select>
+          </label>
+          <label>
+            Mercado
+            <select id="list-market" name="market">
+              <option value="">Selecione o mercado</option>
+            </select>
+            <input
+              id="list-new-market"
+              name="new-market"
+              class="is-hidden"
+              type="text"
+              placeholder="Ex.: Bom Preco"
+              maxlength="80"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            Preco
+            <input
+              id="list-price"
+              name="price"
+              type="text"
+              inputmode="decimal"
+              placeholder="Sugestao automatica"
+              autocomplete="off"
+            />
+          </label>
+          <label>
+            Quant.
+            <input id="list-quantity" name="quantity" type="number" min="0.001" step="0.001" placeholder="1" value="1" />
+          </label>
           <div class="form-actions">
-            <button id="submit-btn" type="submit">Adicionar</button>
-            <button id="cancel-edit-btn" type="button" class="btn-cancel" hidden>Cancelar edicao</button>
+            <button type="submit">Adicionar na lista</button>
           </div>
         </form>
+        <small id="cheapest-hint"></small>
       </section>
 
       <section class="card">
         <div class="list-head">
-          <h2>Lista de compras</h2>
-          <small id="stats"></small>
+          <div class="list-head-title">
+            <h2>Lista de compras</h2>
+            <button
+              id="quick-add-toggle-btn"
+              type="button"
+              class="sync-btn btn-quick-add"
+              title="Adicionar item rapido"
+              aria-label="Adicionar item rapido"
+            >
+              +
+            </button>
+          </div>
+          <div class="list-head-actions">
+            <small id="stats"></small>
+            <div class="buy-mode-box">
+              <small class="buy-mode-title">Escolher mercado</small>
+              <button id="apply-market-btn" type="button" class="sync-btn btn-apply-market">Mais baratos</button>
+            </div>
+            <button id="analyze-list-btn" type="button" class="sync-btn btn-analyze-list">Analisar lista</button>
+          </div>
         </div>
+        <div id="market-analysis" class="market-analysis is-hidden"></div>
+
         <section class="task-section">
           <div class="section-heading">
             <h3 class="section-title">Em aberto</h3>
-            <small class="section-hint">Use os botoes para reorganizar sua lista.</small>
+            <small class="section-hint">Clique em marca/mercado/preco/quant. para editar direto no item.</small>
+            <small id="open-summary" class="open-summary"></small>
           </div>
           <ul id="task-list-open"></ul>
         </section>
+
         <section class="task-section done-section">
           <h3 class="section-title">Concluidas</h3>
+          <small id="done-summary" class="done-summary"></small>
           <ul id="task-list-done"></ul>
         </section>
-        <section class="task-section deleted-section">
-          <h3 class="section-title">Excluidas</h3>
-          <ul id="task-list-deleted"></ul>
+
+        <section class="task-section catalog-section">
+          <div class="section-heading">
+            <h3 class="section-title">Itens cadastrados nao listados na lista de compra</h3>
+            <small class="section-hint">Clique em Adicionar para voltar ao Em aberto com o menor preco cadastrado.</small>
+          </div>
+          <ul id="task-list-catalog"></ul>
         </section>
       </section>
     </main>
 
     <input id="json-file-input" type="file" accept=".json,application/json,text/plain" hidden />
 
-    <template id="task-template">
+    <template id="list-item-template">
       <li class="task-item">
         <button class="btn-toggle" title="Concluir item" aria-label="Concluir item" type="button"></button>
         <div class="task-info">
           <div class="task-title-row">
-            <h3></h3>
+            <div class="task-main-line">
+              <span class="top-rank-badge top-rank-1 top-rank-main">1</span>
+              <h3 class="task-product"></h3>
+              <span class="sep">-</span>
+              <button class="btn-inline btn-brand task-brand-btn" type="button"></button>
+              <span class="sep">-</span>
+              <button class="btn-inline btn-market task-market-btn" type="button"></button>
+              <span class="sep">-</span>
+              <button class="btn-inline btn-price task-price-btn" type="button"></button>
+              <span class="sep">-</span>
+              <button class="btn-inline btn-qty task-qty-btn" type="button"></button>
+            </div>
             <div class="task-actions">
-              <button class="btn-edit" title="Editar item" type="button">Editar</button>
-              <button class="btn-delete danger" title="Excluir" type="button">Excluir</button>
-              <button class="btn-move-up" title="Subir item" type="button">↑</button>
-              <button class="btn-move-down" title="Descer item" type="button">↓</button>
-              <button class="btn-restore" title="Reativar item" type="button">Reativar</button>
+              <button class="btn-save-sync is-hidden" type="button">Salvar</button>
+              <button class="btn-discard-sync is-hidden" type="button">Descartar</button>
+              <button class="btn-delete danger" type="button">Retirar</button>
+              <button class="btn-drag" title="Arrastar item" aria-label="Arrastar item" type="button">&#8645;</button>
+              <button class="btn-move-up" title="Subir item" aria-label="Subir item" type="button">&#8593;</button>
+              <button class="btn-move-down" title="Descer item" aria-label="Descer item" type="button">&#8595;</button>
             </div>
           </div>
+
+          <p class="meta-cheapest top-price-1"></p>
+          <p class="meta-cheapest top-price-2"></p>
+          <p class="done-loss-line is-hidden"></p>
         </div>
       </li>
     </template>
 
+    <template id="catalog-item-template">
+      <li class="catalog-product-item">
+        <div class="catalog-item-head">
+          <strong class="catalog-name"></strong>
+          <button class="btn-add-catalog" type="button">Adicionar</button>
+        </div>
+        <p class="meta-cheapest top-price-1"></p>
+        <p class="meta-cheapest top-price-2"></p>
+      </li>
+    </template>
+
+    <script src="db.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
+
+
+

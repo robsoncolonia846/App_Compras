@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d9488" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Cadastrar Produtos</title>
+  </head>
+  <body data-page="catalog">
+    <main class="app">
+      <header class="hero">
+        <h1>Cadastrar Produtos e Precos</h1>
+        <p>Cadastre referencias para a lista sugerir sempre o menor preco.</p>
+        <nav class="top-nav">
+          <a class="nav-link" href="index.html">Voltar para lista</a>
+          <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
+          <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
+        </nav>
+      </header>
+
+      <section class="card sync-card">
+        <small id="sync-status"></small>
+      </section>
+
+      <section class="card">
+        <h2>Cadastrar referencia de preco</h2>
+        <form id="reference-form" class="grid-form">
+          <label>
+            Produto
+            <select id="reference-product" name="product" required>
+              <option value="">Selecione um produto</option>
+            </select>
+            <input
+              id="reference-new-product"
+              name="new-product"
+              type="text"
+              placeholder="Ex.: Arroz"
+              maxlength="80"
+              class="is-hidden"
+            />
+          </label>
+          <label>
+            Marca
+            <input id="reference-brand" name="brand" type="text" placeholder="Ex.: Tordilho" required maxlength="80" />
+          </label>
+          <label>
+            Mercado
+            <input id="reference-market" name="market" type="text" placeholder="Ex.: Bom Preco" required maxlength="80" />
+          </label>
+          <label>
+            Preco
+            <input id="reference-price" name="price" type="number" min="0" step="0.01" placeholder="Ex.: 7.89" required />
+          </label>
+          <div class="form-actions">
+            <button type="submit">Salvar referencia</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Cadastro geral (ordem alfabetica)</h2>
+        <small class="section-hint">Clique em marca/mercado/preco para editar direto na linha.</small>
+        <ul id="products-list"></ul>
+      </section>
+    </main>
+
+    <input id="json-file-input" type="file" accept=".json,application/json,text/plain" hidden />
+
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
+
+

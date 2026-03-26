@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d9488" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Historico de Precos</title>
+  </head>
+  <body data-page="history">
+    <main class="app">
+      <header class="hero">
+        <h1>Historico de Precos</h1>
+        <p>Comparativo completo por produto, mercado e marca.</p>
+        <nav class="top-nav">
+          <a class="nav-link" href="index.html">Voltar para lista</a>
+          <a class="nav-link" href="products.html">Cadastro de produtos</a>
+          <button id="import-json-btn" type="button" class="sync-btn">Importar JSON</button>
+          <button id="export-json-btn" type="button" class="sync-btn">Exportar JSON</button>
+        </nav>
+      </header>
+
+      <section class="card sync-card">
+        <small id="sync-status"></small>
+      </section>
+
+      <section class="card">
+        <h2>Lista historica</h2>
+        <form id="history-filter-form" class="grid-form compact-form" novalidate>
+          <label>
+            Filtrar produto
+            <select id="history-product-filter" name="product">
+              <option value="">Todos os produtos</option>
+            </select>
+          </label>
+        </form>
+
+        <ul id="history-list"></ul>
+      </section>
+    </main>
+
+    <input id="json-file-input" type="file" accept=".json,application/json,text/plain" hidden />
+
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
+
+
