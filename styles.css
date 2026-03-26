@@ -19,6 +19,7 @@ body {
   font-family: "Segoe UI", Tahoma, sans-serif;
   background: linear-gradient(150deg, #dff6f2 0%, var(--bg) 60%, #f4f5ff 100%);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .app {
@@ -343,6 +344,7 @@ select {
   align-items: flex-end;
   gap: 8px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .list-head-actions #stats {
@@ -959,6 +961,54 @@ select {
 
 .is-hidden {
   display: none !important;
+}
+
+@media (max-width: 759px) {
+  .app {
+    padding: 12px;
+  }
+
+  .list-head {
+    gap: 10px;
+  }
+
+  .list-head-title {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .list-head-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 8px;
+  }
+
+  .list-head-actions #stats {
+    grid-column: 1 / -1;
+    padding-bottom: 0;
+  }
+
+  .buy-mode-box {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .btn-apply-market,
+  .btn-analyze-list {
+    width: 100%;
+    min-height: 34px;
+  }
+
+  .top-nav {
+    gap: 6px;
+  }
+
+  .nav-link,
+  .sync-btn {
+    min-height: 36px;
+  }
 }
 
 @media (min-width: 760px) {
