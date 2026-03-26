@@ -665,7 +665,7 @@ select {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid var(--primary);
+  border: 2px solid #111827;
   background: #fff;
   cursor: pointer;
   padding: 0;
@@ -680,8 +680,8 @@ select {
 }
 
 .btn-toggle.checked {
-  background: var(--success);
-  border-color: var(--success);
+  background: #111827;
+  border-color: #111827;
   box-shadow: inset 0 0 0 5px #ffffff;
 }
 
