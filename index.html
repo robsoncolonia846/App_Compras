@@ -84,18 +84,8 @@
         <div class="list-head">
           <div class="list-head-title">
             <h2>Lista de compras</h2>
-            <button
-              id="quick-add-toggle-btn"
-              type="button"
-              class="sync-btn btn-quick-add"
-              title="Adicionar item rapido"
-              aria-label="Adicionar item rapido"
-            >
-              +
-            </button>
           </div>
           <div class="list-head-actions">
-            <small id="stats"></small>
             <div class="buy-mode-box">
               <small class="buy-mode-title">Escolher mercado</small>
               <button id="apply-market-btn" type="button" class="sync-btn btn-apply-market">Mais baratos</button>
@@ -107,9 +97,19 @@
 
         <section class="task-section">
           <div class="section-heading">
-            <h3 class="section-title">Em aberto</h3>
-            <small class="section-hint">Clique em marca/mercado/preco/quant. para editar direto no item.</small>
-            <small id="open-summary" class="open-summary"></small>
+            <div class="section-title-row">
+              <h3 class="section-title">Em aberto</h3>
+              <button
+                id="quick-add-toggle-btn"
+                type="button"
+                class="sync-btn btn-quick-add"
+                title="Adicionar item rapido"
+                aria-label="Adicionar item rapido"
+              >
+                +
+              </button>
+            </div>
+            <small id="stats" class="open-stats-line"></small>
           </div>
           <ul id="task-list-open"></ul>
         </section>

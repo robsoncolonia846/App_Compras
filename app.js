@@ -2591,7 +2591,6 @@
       wireOpenListDragHandles();
     }
     updateApplyMarketButtonState(openItems);
-    renderOpenSummary(openItems);
     renderMarketAnalysis(openItems);
 
     if (doneItems.length === 0) {
@@ -2626,7 +2625,21 @@
     }
 
     if (home.stats) {
-      home.stats.textContent = `${openItems.length} em aberto | ${doneItems.length} concluidos`;
+      let openTotal = 0;
+      let doneTotal = 0;
+
+      for (const item of openItems) {
+        const info = getItemSpendAndLoss(item);
+        if (info.totalPaid !== null) openTotal += info.totalPaid;
+      }
+      for (const item of doneItems) {
+        const info = getItemSpendAndLoss(item);
+        if (info.totalPaid !== null) doneTotal += info.totalPaid;
+      }
+
+      openTotal = Number(openTotal.toFixed(2));
+      doneTotal = Number(doneTotal.toFixed(2));
+      home.stats.textContent = `${openItems.length} em aberto (${dbApi.formatPrice(openTotal)}) / ${doneItems.length} Concluidos (${dbApi.formatPrice(doneTotal)})`;
     }
   }
 

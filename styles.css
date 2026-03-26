@@ -337,6 +337,7 @@ select {
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-content: flex-start;
 }
 
 .list-head-actions {
@@ -522,6 +523,12 @@ select {
   margin-bottom: 8px;
 }
 
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .section-title {
   margin: 0;
   font-size: 0.95rem;
@@ -538,6 +545,14 @@ select {
   margin-top: 2px;
   font-size: 0.82rem;
   color: #334155;
+}
+
+.open-stats-line {
+  display: block;
+  margin-top: 1px;
+  font-size: 0.83rem;
+  color: #0f172a;
+  font-weight: 700;
 }
 
 .done-section {
@@ -1027,7 +1042,7 @@ select {
 
   .list-head-title {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .list-head-actions {
@@ -1084,6 +1099,10 @@ select {
 
   .section-title {
     font-size: 0.9rem;
+  }
+
+  .open-stats-line {
+    font-size: 0.75rem;
   }
 
   .section-hint,
