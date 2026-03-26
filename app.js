@@ -61,6 +61,7 @@
 
   const NEW_PRODUCT_OPTION_VALUE = "__new_product__";
   const NEW_MARKET_OPTION_VALUE = "__new_market__";
+  const QUICK_QUANTITY_OPTIONS = Array.from({ length: 10 }, (_, index) => String(index + 1));
   const PRICE_SYNC_FIELDS = ["brand", "market", "price"];
   let marketAnalysisVisible = false;
   let bulkMarketApplied = false;
@@ -1103,15 +1104,8 @@
     }
 
     if (field === "quantity") {
-      const current = formatQuantity(draft.quantity || 1);
-      const nextRaw = window.prompt("Quantidade do item", current);
-      if (nextRaw === null) return;
-
-      const nextQty = dbApi.parseQuantity(nextRaw);
-      if (!nextQty) {
-        setSyncStatus("Quantidade invalida. Use numero maior que zero.");
-        return;
-      }
+      const nextQty = await pickQuantityFromList("Quantidade do item", draft.quantity || 1);
+      if (nextQty === null || nextQty === undefined) return;
       draft.quantity = nextQty;
       renderCurrentPage();
     }
@@ -1608,7 +1602,32 @@
     return [];
   }
 
-  function pickOptionFromList(title, currentValue, options) {
+  async function pickQuantityFromList(title, currentValue) {
+    const selected = await pickOptionFromList(
+      title,
+      formatQuantity(currentValue || 1),
+      QUICK_QUANTITY_OPTIONS,
+      {
+        customToggleLabel: "Digitar maior que 10...",
+        customPlaceholder: "Ex.: 11",
+      },
+    );
+
+    if (selected === null) return null;
+    const parsed = dbApi.parseQuantity(selected);
+    if (!parsed) {
+      setSyncStatus("Quantidade invalida. Use numero maior que zero.");
+      return undefined;
+    }
+    return parsed;
+  }
+
+  function pickOptionFromList(title, currentValue, options, pickerOptions = {}) {
+    const {
+      customToggleLabel = "Digitar outro...",
+      customPlaceholder = "Digite o valor",
+    } = pickerOptions;
+
     return new Promise((resolve) => {
       const overlay = document.createElement("div");
       overlay.className = "picker-overlay";
@@ -1641,13 +1660,13 @@
       const customToggleBtn = document.createElement("button");
       customToggleBtn.type = "button";
       customToggleBtn.className = "picker-option-btn picker-option-custom";
-      customToggleBtn.textContent = "Digitar outro...";
+      customToggleBtn.textContent = customToggleLabel;
 
       const customInput = document.createElement("input");
       customInput.className = "picker-input is-hidden";
       customInput.type = "text";
       customInput.maxLength = 80;
-      customInput.placeholder = "Digite o valor";
+      customInput.placeholder = customPlaceholder;
 
       const customActions = document.createElement("div");
       customActions.className = "picker-actions is-hidden";
@@ -2066,15 +2085,8 @@
     }
 
     if (field === "quantity") {
-      const nextRaw = window.prompt(`${label} do item`, current);
-      if (nextRaw === null) return;
-
-      const nextQty = dbApi.parseQuantity(nextRaw);
-      if (!nextQty) {
-        setSyncStatus("Quantidade invalida. Use numero maior que zero.");
-        return;
-      }
-
+      const nextQty = await pickQuantityFromList(`${label} do item`, getItemQuantity(item));
+      if (nextQty === null || nextQty === undefined) return;
       updateListItem(item.id, { quantity: nextQty });
       return;
     }
