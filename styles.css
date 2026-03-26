@@ -669,10 +669,23 @@ select {
 }
 
 .task-main-line {
+  display: grid;
+  gap: 4px;
+}
+
+.task-main-product-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.task-main-meta-row {
   display: flex;
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .task-main-line .btn-inline {
@@ -1111,14 +1124,20 @@ select {
     align-items: flex-start;
   }
 
-  .task-main-line .sep {
-    display: none;
+  .task-main-product-row .task-product {
+    font-size: 0.96rem;
   }
 
-  .task-title-row h3 {
-    font-size: 0.96rem;
-    flex: 1 1 calc(100% - 24px);
-    min-width: 0;
+  .task-main-meta-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 1px;
+  }
+
+  .task-main-meta-row::-webkit-scrollbar {
+    display: none;
   }
 
   .task-main-line .top-rank-main {
@@ -1200,10 +1219,6 @@ select {
     padding: 6px 8px;
   }
 
-  .task-main-line .sep {
-    display: none;
-  }
-
   .task-main-line {
     row-gap: 6px;
   }
@@ -1223,6 +1238,17 @@ select {
 }
 
 @media (min-width: 760px) {
+  .task-main-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .task-main-meta-row {
+    overflow: visible;
+  }
+
   .grid-form {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: end;
