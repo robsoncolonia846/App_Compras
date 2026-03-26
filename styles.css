@@ -1130,10 +1130,6 @@ select {
     font-size: 0.74rem;
   }
 
-  .task-main-line .btn-brand {
-    margin-left: 22px;
-  }
-
   .top-rank-badge {
     min-width: 18px;
     padding: 1px 5px;
