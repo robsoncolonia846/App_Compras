@@ -1378,6 +1378,10 @@
     }
     if (!quantity) quantity = 1;
 
+    if (hasAnyManualData && brand && market && !rawPrice && price === null) {
+      price = 0;
+    }
+
     if (hasAnyManualData && (!brand || !market || price === null)) {
       return { ok: false, message: "Selecione marca, mercado e preco para adicionar o item." };
     }

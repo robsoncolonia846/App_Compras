@@ -24,8 +24,24 @@
   }
 
   function parsePrice(value) {
-    const text = normalizeText(value).replace(",", ".");
+    const rawText = normalizeText(value);
+    if (!rawText) return null;
+
+    // Accept common user formats such as "0", "0,00" and "R$ 0,00".
+    let text = rawText
+      .replace(/\s+/g, "")
+      .replace(/r\$/gi, "")
+      .replace(/[^0-9,.\-]/g, "");
+
     if (!text) return null;
+
+    const hasComma = text.includes(",");
+    const hasDot = text.includes(".");
+    if (hasComma && hasDot) {
+      text = text.replace(/\./g, "").replace(",", ".");
+    } else if (hasComma) {
+      text = text.replace(",", ".");
+    }
 
     const parsed = Number(text);
     if (!Number.isFinite(parsed) || parsed < 0) return null;
