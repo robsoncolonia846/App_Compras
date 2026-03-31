@@ -1,5 +1,5 @@
 :root {
-  --bg: #f2f7f6;
+  --bg: #ffe8cf;
   --card: #ffffff;
   --text: #111827;
   --muted: #4b5563;
@@ -17,7 +17,7 @@
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, sans-serif;
-  background: linear-gradient(150deg, #dff6f2 0%, var(--bg) 60%, #f4f5ff 100%);
+  background: linear-gradient(150deg, #ffd9b0 0%, var(--bg) 62%, #fff2df 100%);
   color: var(--text);
   overflow-x: hidden;
 }
